@@ -83,7 +83,7 @@ function TimerComponent() {
         <View style={styles.pickerContainer}>
             <Text style={styles.pickerItem}>Timer Page</Text>
             <Button
-                title="Перейти к таймеру"
+                title="Перейти к будильнику"
                 onPress={() => navigation.navigate('Alarm')}
             />
         </View>

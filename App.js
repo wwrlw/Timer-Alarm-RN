@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Timer">
+            <Stack.Navigator initialRouteName="Alarm">
                 <Stack.Screen name="Alarm" component={AlarmComponent} />
                 <Stack.Screen name="Timer" component={TimerComponent} />
             </Stack.Navigator>
