@@ -1,4 +1,5 @@
 import { View, Button, FlatList, Text, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+import {useNavigation} from "@react-navigation/native";
 
 
 const screen = Dimensions.get('window');
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
 });
 
 const AlarmComponent = () => {
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <Text style={styles.mainText}>Сенин Тимфофей Денисович</Text>
