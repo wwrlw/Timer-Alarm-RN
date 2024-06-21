@@ -109,10 +109,6 @@ const AlarmComponent = () => {
                     </View>
                 )}
             />
-            <Button
-                title="Перейти к таймеру"
-                onPress={() => navigation.navigate('Timer')}
-            />
         </View>
     );
 };

@@ -1,19 +1,40 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AlarmComponent from './components/Alarm';
 import TimerComponent from './components/Timer';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Alarm">
-                <Stack.Screen name="Alarm" component={AlarmComponent} />
-                <Stack.Screen name="Timer" component={TimerComponent} />
-            </Stack.Navigator>
+            <Tab.Navigator
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
+                        if (route.name === 'Alarm') {
+                            iconName = focused ? 'alarm' : 'alarm-outline';
+                        } else if (route.name === 'Timer') {
+                            iconName = focused ? 'timer' : 'timer-outline';
+                        }
+                        return <Ionicons name={iconName} size={size} color={color} />;
+                    },
+                    tabBarActiveTintColor: '#89AAFF',
+                    tabBarInactiveTintColor: 'gray',
+                    tabBarStyle: [
+                        {
+                            display: 'flex'
+                        },
+                        null
+                    ]
+                })}
+            >
+                <Tab.Screen name="Alarm" component={AlarmComponent} />
+                <Tab.Screen name="Timer" component={TimerComponent} />
+            </Tab.Navigator>
         </NavigationContainer>
     );
 }
