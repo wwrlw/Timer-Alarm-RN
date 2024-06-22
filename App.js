@@ -5,8 +5,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AlarmComponent from './components/Alarm';
 import TimerComponent from './components/Timer';
+import {createStackNavigator} from "@react-navigation/stack";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function App() {
     return (
@@ -29,7 +31,8 @@ function App() {
                             display: 'flex'
                         },
                         null
-                    ]
+                    ],
+                    headerShown: false // скрываем верхнюю полоску
                 })}
             >
                 <Tab.Screen name="Alarm" component={AlarmComponent} />

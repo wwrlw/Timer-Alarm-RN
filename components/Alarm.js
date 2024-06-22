@@ -1,17 +1,19 @@
-import React, { useState, useReducer } from 'react';
-import { View, Button, FlatList, Text, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Button, FlatList, Text, TouchableOpacity, StyleSheet, Dimensions, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const screen = Dimensions.get('window');
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#07121B',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: 20,
+        width: '100%',
     },
     mainText: {
         color: '#fff',
@@ -25,7 +27,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 10,
-        padding: 10
+        padding: 10,
+        flexDirection: 'row'
     },
     buttonText: {
         color: '#89AAFF',
@@ -35,29 +38,51 @@ const styles = StyleSheet.create({
         backgroundColor: '#333',
         padding: 10,
         marginVertical: 5,
-        borderRadius: 10
+        borderRadius: 10,
+        width: screen.width - 40,
+        alignSelf: 'center',
     },
     alarmText: {
         color: '#fff',
-        fontSize: 16
+        fontSize: 16,
+        marginBottom: 10
+    },
+    iconButton: {
+        marginHorizontal: 10
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalButton: {
+        marginTop: 10,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: '#89AAFF',
+    },
+    modalButtonText: {
+        color: '#fff',
+        fontSize: 18
     }
 });
-// Функциональный компонент для работы с будильниками
-const AlarmComponent = () => {
-    // Хук навигации, предоставляющий методы для перехода между экранами
-    const navigation = useNavigation();
-    // Состояние для хранения списка будильников
-    const [alarms, setAlarms] = useState([]);
-    // Состояние для хранения текущего будильника (редактирование или добавление нового)
-    const [currentAlarm, setCurrentAlarm] = useState({});
-    // Состояние для отображения или скрытия выбора времени с использованием DateTimePicker
-    const [showPicker, setShowPicker] = useState(false);
 
-    // Функция для добавления или обновления будильника в списке
-    const addOrUpdateAlarm = (selectedDate) => {
-        // Создаем новый объект будильника с уникальным идентификатором (или текущим временем) и выбранной датой (или текущим временем)
+const AlarmComponent = () => {
+    const navigation = useNavigation();
+    const [alarms, setAlarms] = useState([]);
+    const [currentAlarm, setCurrentAlarm] = useState({});
+    const [showModal, setShowModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    const addOrUpdateAlarm = () => {
         const newAlarm = { id: currentAlarm.id || Date.now(), time: selectedDate || new Date() };
-        // Обновляем состояние списка будильников, используя функцию обратного вызова в setAlarms
         setAlarms(prev => {
             const index = prev.findIndex(a => a.id === newAlarm.id);
             if (index > -1) {
@@ -65,50 +90,72 @@ const AlarmComponent = () => {
             }
             return [...prev, newAlarm];
         });
-        // Сбрасываем текущий будильник в пустой объект
         setCurrentAlarm({});
-        // Скрываем DateTimePicker
-        setShowPicker(false);
+        setShowModal(false);
     };
 
-    // Функция для удаления будильника по ID
     const deleteAlarm = (id) => {
         setAlarms(alarms.filter(alarm => alarm.id !== id));
     };
-    // Функция для редактирования будильника
     const editAlarm = (alarm) => {
         setCurrentAlarm(alarm);
-        setShowPicker(true);
+        setSelectedDate(new Date(alarm.time));
+        setShowModal(true);
+    };
+
+    const handleDateChange = (event, date) => {
+        if (date) {
+            setSelectedDate(date);
+        }
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.mainText}>Сенин Тимфофей Денисович</Text>
-            {showPicker && (
-                <DateTimePicker
-                    value={currentAlarm.time || new Date()}
-                    mode="time"
-                    is24Hour={true}
-                    display="default"
-                    onChange={(event, selectedDate) => addOrUpdateAlarm(selectedDate)}
-                />
-            )}
-            <Button title="Добавить будильник" onPress={() => setShowPicker(true)} />
+            <Button title="Добавить будильник" onPress={() => setShowModal(true)} />
             <FlatList
                 data={alarms}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.alarmItem}>
                         <Text style={styles.alarmText}>Будильник на {item.time.toLocaleTimeString()}</Text>
-                        <TouchableOpacity onPress={() => editAlarm(item)} style={styles.button}>
-                            <Text style={styles.buttonText}>Изменить</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deleteAlarm(item.id)} style={styles.button}>
-                            <Text style={styles.buttonText}>Удалить</Text>
-                        </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <TouchableOpacity onPress={() => editAlarm(item)} style={styles.iconButton}>
+                                <Icon name="edit" size={20} color="#89AAFF" />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => deleteAlarm(item.id)} style={styles.iconButton}>
+                                <Icon name="trash" size={20} color="#89AAFF" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
+                contentContainerStyle={{ paddingVertical: 10 }}
+                style={{ width: '100%' }}
             />
+            <Modal
+                transparent={true}
+                visible={showModal}
+                onRequestClose={() => setShowModal(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text>Выберите время для будильника</Text>
+                        <DateTimePicker
+                            value={selectedDate}
+                            mode="time"
+                            is24Hour={true}
+                            display="default"
+                            onChange={handleDateChange}
+                        />
+                        <TouchableOpacity onPress={addOrUpdateAlarm} style={styles.modalButton}>
+                            <Text style={styles.modalButtonText}>Сохранить</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setShowModal(false)} style={[styles.modalButton, { backgroundColor: '#FF6666' }]}>
+                            <Text style={styles.modalButtonText}>Отмена</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
