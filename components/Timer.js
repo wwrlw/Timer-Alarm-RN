@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { Audio} from "expo-av";
 
 const screen = Dimensions.get('window');
 
@@ -84,7 +85,10 @@ function TimerComponent() {
     // Создает состояние для отслеживания выбранных минут. Изначально установлено в '0'.
     const [selectedSeconds, setSelectedSeconds] = useState('5');
     // Создает состояние для отслеживания выбранных секунд. Изначально установлено в '5'.
+    const [sound, setSound] = useState();
     const navigation = useNavigation();
+
+
 
     useEffect(() => {
         // useEffect обрабатывает логику таймера.
@@ -97,12 +101,32 @@ function TimerComponent() {
         }
         // Останавливает таймер, если время истекло.
         if (remainingSeconds === 0 && isRunning) {
+            playSound();
             clearInterval(interval);
             setIsRunning(false);
         }
         // Очищает интервал при размонтировании компонента или изменении зависимостей.
         return () => clearInterval(interval);
     }, [isRunning, remainingSeconds]);
+
+    async function playSound() {
+        console.log('Loading Sound');
+        const { sound } = await Audio.Sound.createAsync( require('../assets/tone/iphone-ringtone-sound-effect.mp3')
+        );
+        setSound(sound);
+
+        console.log('Playing Sound');
+        await sound.playAsync();
+    }
+
+    useEffect(() => {
+        return sound
+            ? () => {
+                console.log('Unloading Sound');
+                sound.unloadAsync();
+            }
+            : undefined;
+    }, [sound]);
 
     // Запускает таймер с выбранным временем.
     const start = useCallback(() => {

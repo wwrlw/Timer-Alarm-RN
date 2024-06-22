@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
     },
     alarmText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 30,
+        textAlign: "center",
         marginBottom: 10
     },
     iconButton: {
@@ -118,7 +119,14 @@ const AlarmComponent = () => {
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.alarmItem}>
-                        <Text style={styles.alarmText}>Будильник на {item.time.toLocaleTimeString()}</Text>
+                        <Text style={styles.alarmText}>{item.time.toLocaleTimeString()}</Text>
+                        <View
+                            style={{
+                                borderBottomColor: 'black',
+                                marginBottom: 10,
+                                borderBottomWidth: StyleSheet.hairlineWidth,
+                            }}
+                        />
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <TouchableOpacity onPress={() => editAlarm(item)} style={styles.iconButton}>
                                 <Icon name="edit" size={20} color="#89AAFF" />
