@@ -77,36 +77,57 @@ const styles = StyleSheet.create({
 
 const AlarmComponent = () => {
     const navigation = useNavigation();
+    // Хук для навигации между экранами
     const [alarms, setAlarms] = useState([]);
+    // Состояние для хранения списка будильников
     const [currentAlarm, setCurrentAlarm] = useState({});
+    // Состояние для текущего редактируемого будильника
     const [showModal, setShowModal] = useState(false);
+    // Состояние для управления отображением модального окна
     const [selectedDate, setSelectedDate] = useState(new Date());
+    // Состояние для выбранной даты и времени будильника
 
+    // Функция для добавления или обновления будильника
     const addOrUpdateAlarm = () => {
         const newAlarm = { id: currentAlarm.id || Date.now(), time: selectedDate || new Date() };
+        // Создаем новый будильник с уникальным id (если это новый будильник) и выбранным временем
         setAlarms(prev => {
             const index = prev.findIndex(a => a.id === newAlarm.id);
+            // Проверяем, существует ли уже будильник с таким id
             if (index > -1) {
+                // Если существует, обновляем его
                 return [...prev.slice(0, index), newAlarm, ...prev.slice(index + 1)];
             }
+            // Если не существует, добавляем его в список
             return [...prev, newAlarm];
         });
         setCurrentAlarm({});
+        // Очищаем текущий будильник
         setShowModal(false);
+        // Закрываем модальное окно
     };
 
+
+    // Функция для удаления будильника по id
     const deleteAlarm = (id) => {
         setAlarms(alarms.filter(alarm => alarm.id !== id));
     };
+
+    // Функция для редактирования будильника
     const editAlarm = (alarm) => {
         setCurrentAlarm(alarm);
+        // Устанавливаем редактируемый будильник
         setSelectedDate(new Date(alarm.time));
+        // Устанавливаем дату и время редактируемого будильника
         setShowModal(true);
+        // Открываем модальное окно
     };
 
+
+    // Функция для обработки изменения даты и времени
     const handleDateChange = (event, date) => {
         if (date) {
-            setSelectedDate(date);
+            setSelectedDate(date); // Устанавливаем выбранную дату и время
         }
     };
 

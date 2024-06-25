@@ -5,10 +5,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AlarmComponent from './components/Alarm';
 import TimerComponent from './components/Timer';
+import WorldTimeComponent from "./components/WorldTime";
 import {createStackNavigator} from "@react-navigation/stack";
+import WorldTime from "./components/WorldTime";
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+// const Stack = createStackNavigator();
 
 function App() {
     return (
@@ -21,6 +23,8 @@ function App() {
                             iconName = focused ? 'alarm' : 'alarm-outline';
                         } else if (route.name === 'Timer') {
                             iconName = focused ? 'timer' : 'timer-outline';
+                        } else if (route.name === 'WorldTime') {
+                            iconName = focused ? 'globe' : 'globe-outline'
                         }
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
@@ -37,6 +41,7 @@ function App() {
             >
                 <Tab.Screen name="Alarm" component={AlarmComponent} />
                 <Tab.Screen name="Timer" component={TimerComponent} />
+                <Tab.Screen name="WorldTime" component={WorldTimeComponent}/>
             </Tab.Navigator>
         </NavigationContainer>
     );
