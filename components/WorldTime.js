@@ -5,59 +5,70 @@ import {
     Text,
     Dimensions,
     StatusBar,
-    Platform,
+    FlatList,
+    ActivityIndicator,
 } from 'react-native';
+
 
 const screen = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width: '100%',
         backgroundColor: '#07121B',
         alignItems: 'center',
-        justifyContent: 'center'
+
     },
     mainText: {
+        marginTop: 40,
         justifyContent: 'center',
-        color: '#fff',
-        fontSize: 24,
-        marginBottom: 20
-    },
-    timeText: {
         color: '#fff',
         fontSize: 48,
         marginBottom: 20
     },
-    picker: {
-        height: 50,
-        width: screen.width / 2,
+    timeText: {
         color: '#fff',
-        ...Platform.select({
-            android: {
-                backgroundColor: 'rgba(92, 92, 92, 0.206)',
-            }
-        })
+        fontSize: 24,
+        marginBottom: 20
     },
-    pickerItem: {
-        color: '#fff',
-        fontSize: 20,
-        ...Platform.select({
-            android: {
-                marginLeft: 10,
-                marginRight: 10,
-            }
-        })
-    }
+
 });
 
 
 const WorldTimeComponent = () => {
+    const [isLoading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
+
+    const getTime = async () => {
+        try {
+            const response = await fetch('http://worldtimeapi.org/api/timezone/Europe/Warsaw');
+            const json = await response.json();
+            setData(json);
+            console.log(json);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getTime();
+    }, []);
+
     return (
         <View style={styles.container}>
-            <StatusBar barStyle='light-content' />
-            <Text style={styles.mainText}>World Clock</Text>
-            <Text style={styles.timeText}>currentTime</Text>
-
+            {isLoading ? (
+                <ActivityIndicator size="large" color="#89AAFF" />
+            ) : (
+                <View>
+                    <Text style={styles.mainText}>World Time</Text>
+                    <Text style={styles.timeText}>Timezone: {data.timezone}</Text>
+                    <Text style={styles.timeText}>{data.datetime}</Text>
+                    <Text style={styles.timeText}>{data.client_ip}</Text>
+                </View>
+            )}
         </View>
     );
 }

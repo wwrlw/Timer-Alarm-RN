@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     mainText: {
+        marginTop: 40,
         color: '#fff',
         fontSize: 20,
         marginVertical: 10
