@@ -12,6 +12,7 @@ import {
 
 const screen = Dimensions.get('window');
 
+// Стили для компонентов
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -53,16 +54,18 @@ const styles = StyleSheet.create({
     },
 });
 
+// Основной компонент приложения
 const WorldTimeComponent = () => {
-    const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-    const [locations, setLocations] = useState([
+    const [isLoading, setLoading] = useState(true);  // Состояние для индикатора загрузки
+    const [data, setData] = useState([]); // Состояние для хранения данных о времени
+    const [locations, setLocations] = useState([ // Состояние для хранения списка локаций
         { area: 'Europe', location: 'Moscow' },
         { area: 'Europe', location: 'Warsaw' },
         { area: 'America', location: 'New_York' },
         { area: 'Asia', location: 'Tokyo' },
     ]);
 
+    // Функция для получения времени из API для заданной локации
     const getTime = async (area, location) => {
         try {
             const response = await fetch(`http://worldtimeapi.org/api/timezone/${area}/${location}`);
@@ -74,24 +77,27 @@ const WorldTimeComponent = () => {
         }
     };
 
+    // Использование хука для получения времени при первом рендере и изменении списка локаций
     useEffect(() => {
         const fetchData = async () => {
             const results = await Promise.all(
-                locations.map(loc => getTime(loc.area, loc.location))
+                locations.map(loc => getTime(loc.area, loc.location)) // Установка данных, исключая ошибки
             );
             setData(results.filter(result => result !== null));
-            setLoading(false);
+            setLoading(false); // Отключение индикатора загрузки
         };
         fetchData();
     }, [locations]);
 
+    // Функция для форматирования времени
     const formatTime = (datetime) => {
         return datetime ? datetime.split('T')[1].split('.')[0] : '';
     };
 
+    // Функция для добавления новой локации
     const addLocation = () => {
         setLocations([...locations, { area: 'Australia', location: 'Sydney' }]);
-        setLoading(true);
+        setLoading(true); // Включение индикатора загрузки
     };
 
     return (

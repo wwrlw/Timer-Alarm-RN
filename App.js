@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { View } from 'react-native';
 
 import AlarmComponent from './components/Alarm';
 import TimerComponent from './components/Timer';
@@ -12,7 +11,6 @@ const Tab = createBottomTabNavigator();
 
 function App() {
     return (
-        <View style={styles.globalContainer}>
             <NavigationContainer>
                 <Tab.Navigator
                     screenOptions={({ route }) => ({
@@ -43,7 +41,6 @@ function App() {
                     <Tab.Screen name="WorldTime" component={WorldTimeComponent} />
                 </Tab.Navigator>
             </NavigationContainer>
-        </View>
     );
 }
 
